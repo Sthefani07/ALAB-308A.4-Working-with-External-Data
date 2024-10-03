@@ -1,7 +1,8 @@
 import * as Carousel from "./Carousel.mjs";
+import { createCarouselItem, start } from "./Carousel.mjs";
 
 
-console.log('hello')
+//console.log('hello')
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
 // The information section div element.
@@ -15,29 +16,42 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY = "live_jhTDabkB7vTxszsdQnGrwS2Vx8MmMar1ucTjza4bdU7oLZU11U6CfNMC1fdlBuQ9";
 
 
- //* 1. Create an async function "initialLoad" that does the following: -----
- (async function initialLoad(){
- //- Retrieve a list of breeds from the cat API using fetch(). -----
- let res = await fetch(`https://api.thecatapi.com/v1/breeds`)
- let breeds = await res.json()
+//* 1. Create an async function "initialLoad" that does the following: -----
+//  (async function initialLoad(){
+//  //- Retrieve a list of breeds from the cat API using fetch(). -----
+//  let res = await fetch(`https://api.thecatapi.com/v1/breeds`)
+//  let breeds = await res.json()
+//   console.log(breeds);
+// // - Create new <options> for each of these breeds, and append them to breedSelect.
+//   breeds.forEach((breeds) => {
+//     let options = document.createElement("option");
+// //- Each option should have a value attribute equal to the id of the breed.
+//     options.setAttribute("value", breed.id);
+
+// //  - Each option should display text equal to the name of the breed.
+//  let breedName = document.createTextNode(breed.name);
+//  options.appendChild(breedName);
+// // This function should execute immediately.
+//     document.getElementById("breedSelect");
+//     document.getElementById("breedSelect").appendChild(options)
+
+//   });
+//   initialLoad()
+// })
+(async function initialLoad() {
+  let res = await fetch(`https://api.thecatapi.com/v1/breeds`, { headers: { "x-api-key": API_KEY } })
+  let breeds = await res.json()
   console.log(breeds);
-// - Create new <options> for each of these breeds, and append them to breedSelect.
-  breeds.forEach((breeds) => {
+  breeds.forEach((breed) => {
     let options = document.createElement("option");
-//- Each option should have a value attribute equal to the id of the breed.
-    options.setAttribute("value", breed.id);
-    
-//  - Each option should display text equal to the name of the breed.
- let breedName = document.createTextNode(breed.name);
- options.appendChild(breedName);
-// This function should execute immediately.
-    document.getElementById("breedSelect");
-    document.getElementById("breedSelect").appendChild(options)
+    options.value = breed.id
+    //options.innerHTML = breed.name
+    options.textContent = breed.name
+    breedSelect.appendChild(options)
+  })
+  console.log(breedSelect)
 
-  });
-  initialLoad()
-})
-
+})()
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -53,6 +67,43 @@ const API_KEY = "live_jhTDabkB7vTxszsdQnGrwS2Vx8MmMar1ucTjza4bdU7oLZU11U6CfNMC1f
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+
+breedSelect.addEventListener("change", async function retrieve(e) {
+  Carousel.clear()
+  const breedID = (e.target.value)
+  const res = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedID}&api_key=${API_KEY}`)
+  const breeds = await res.json()
+
+
+  //console.log(e.target.value);
+
+  for (const breed of breeds) {
+    let imgSrc = breed.url
+    let imgAlt = breed.breeds[0].name
+    let imgId = breed.breeds[0].reference_image_id;
+    let item = createCarouselItem(imgSrc, imgAlt, imgId)
+    Carousel.appendCarousel(item);
+    start();
+    console.log(imgSrc, imgAlt, imgId)
+  }
+
+});
+
+
+//  async function retrieve(breedID){
+// //   const res = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=beng&api_key=${API_KEY}`)
+// //   const breed = res.json()
+
+//   console.log(breedID);
+
+//   // for (const breed of thisBreed){
+//   //   console.log(breedID)
+//   // }
+// }
+
+
+
+
 
 
 
