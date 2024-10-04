@@ -16,28 +16,10 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY = "live_jhTDabkB7vTxszsdQnGrwS2Vx8MmMar1ucTjza4bdU7oLZU11U6CfNMC1fdlBuQ9";
 
 
-//* 1. Create an async function "initialLoad" that does the following: -----
-//  (async function initialLoad(){
-//  //- Retrieve a list of breeds from the cat API using fetch(). -----
-//  let res = await fetch(`https://api.thecatapi.com/v1/breeds`)
-//  let breeds = await res.json()
-//   console.log(breeds);
-// // - Create new <options> for each of these breeds, and append them to breedSelect.
-//   breeds.forEach((breeds) => {
-//     let options = document.createElement("option");
-// //- Each option should have a value attribute equal to the id of the breed.
-//     options.setAttribute("value", breed.id);
 
-// //  - Each option should display text equal to the name of the breed.
-//  let breedName = document.createTextNode(breed.name);
-//  options.appendChild(breedName);
-// // This function should execute immediately.
-//     document.getElementById("breedSelect");
-//     document.getElementById("breedSelect").appendChild(options)
 
-//   });
-//   initialLoad()
-// })
+//____________________________Part 1_____________________________________
+
 (async function initialLoad() {
   let res = await fetch(`https://api.thecatapi.com/v1/breeds`, { headers: { "x-api-key": API_KEY } })
   let breeds = await res.json()
@@ -53,7 +35,9 @@ const API_KEY = "live_jhTDabkB7vTxszsdQnGrwS2Vx8MmMar1ucTjza4bdU7oLZU11U6CfNMC1f
 
 })()
 
-/**
+/** ________________PART 2 _______________
+ * 
+ *  
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
  *  - Make sure your request is receiving multiple array items!
@@ -78,28 +62,25 @@ breedSelect.addEventListener("change", async function retrieve(e) {
   //console.log(e.target.value);
 
   for (const breed of breeds) {
-    let imgSrc = breed.url
-    let imgAlt = breed.breeds[0].name
-    let imgId = breed.breeds[0].reference_image_id;
-    let item = createCarouselItem(imgSrc, imgAlt, imgId)
-    Carousel.appendCarousel(item);
-    start();
-    console.log(imgSrc, imgAlt, imgId)
-  }
+    if (breed.breeds && breed.breeds.length > 0) {
 
+
+      let imgSrc = breed.url
+      let imgAlt = breed.breeds[0].name
+      let imgId = breed.breeds[0].reference_image_id;
+      let item = createCarouselItem(imgSrc, imgAlt, imgId)
+      Carousel.appendCarousel(item);
+
+      console.log(imgSrc, imgAlt, imgId)
+    } else {
+      console.warn("No breed data available for this image.")
+    }
+  }
+  start();
 });
 
 
-//  async function retrieve(breedID){
-// //   const res = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=beng&api_key=${API_KEY}`)
-// //   const breed = res.json()
 
-//   console.log(breedID);
-
-//   // for (const breed of thisBreed){
-//   //   console.log(breedID)
-//   // }
-// }
 
 
 
@@ -179,3 +160,23 @@ export async function favourite(imgId) {
  * - Test other breeds as well. Not every breed has the same data available, so
  *   your code should account for this.
  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
